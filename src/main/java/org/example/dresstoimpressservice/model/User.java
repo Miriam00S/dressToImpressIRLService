@@ -1,8 +1,9 @@
 package org.example.dresstoimpressservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "user_entity")
 public class User {
@@ -15,6 +16,23 @@ public class User {
     private String nickname;
     private String mail;
     private String photo;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Styling> stylings = new ArrayList<>();
+
+    public void addStyling(Styling styling) {
+        stylings.add(styling);
+        styling.setUser(this);
+    }
+
+    public void removeStyling(Styling styling) {
+        stylings.remove(styling);
+        styling.setUser(null);
+    }
 
 
     public Long getId() {
@@ -63,5 +81,13 @@ public class User {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public List<Styling> getStylings() {
+        return stylings;
+    }
+
+    public void setStylings(List<Styling> stylings) {
+        this.stylings = stylings;
     }
 }

@@ -13,13 +13,22 @@ public class Styling {
     @GeneratedValue
     private Long id;
 
-    private Long userId;
 
     private String name;
+
+    private String photo;
+
+    private String description;
+
+    private Boolean isPrivate;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Show show;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @OneToMany(
             mappedBy = "styling",
@@ -47,13 +56,6 @@ public class Styling {
         return allStylings.indexOf(this) + 1;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public Long getId() {
         return id;
@@ -79,11 +81,43 @@ public class Styling {
         this.show = show;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public List<Vote> getVotes() {
         return votes;
     }
 
     public void setVotes(List<Vote> votes) {
         this.votes = votes;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(Boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }

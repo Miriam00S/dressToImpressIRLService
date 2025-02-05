@@ -1,8 +1,6 @@
 package org.example.dresstoimpressservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity(name = "banner")
 public class Banner {
@@ -11,6 +9,10 @@ public class Banner {
     @GeneratedValue
     private Long id;
     private String photo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    private Show show;
 
     public Long getId() {
         return id;
@@ -26,5 +28,13 @@ public class Banner {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public Show getShow() {
+        return show;
+    }
+
+    public void setShow(Show show) {
+        this.show = show;
     }
 }
