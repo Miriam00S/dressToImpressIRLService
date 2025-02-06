@@ -2,10 +2,9 @@ package org.example.dresstoimpressservice.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name = "show")
 public class Show {
@@ -17,6 +16,12 @@ public class Show {
 
     private Long creatorId;
 
+    private Integer maxParticipantsNumber;
+
+    private LocalDateTime joiningDate;
+
+    private LocalDateTime votingTime;
+
     @OneToMany(
             mappedBy = "show",
             cascade = CascadeType.ALL,
@@ -24,19 +29,23 @@ public class Show {
     )
     private List<Styling> stylings = new ArrayList<>();
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "show_category",
-            joinColumns = @JoinColumn(name = "show_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+    @OneToMany(
+            mappedBy = "show",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<Category> categories = new HashSet<>();
+    private List<Category> categories = new ArrayList<>();
 
     @OneToOne(mappedBy = "show", cascade = CascadeType.ALL,
             fetch = FetchType.LAZY, optional = false)
     private Banner banner;
+
+    @OneToMany(
+            mappedBy = "show",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Comment> comments = new ArrayList<>();
 
     public void addStyling(Styling styling) {
         stylings.add(styling);
@@ -48,14 +57,24 @@ public class Show {
         styling.setShow(null);
     }
 
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setShow(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setShow(null);
+    }
+
     public void addCategory(Category category) {
         categories.add(category);
-        category.getShows().add(this);
+        category.setShow(this);
     }
 
     public void removeCategory(Category category) {
         categories.remove(category);
-        category.getShows().remove(this);
+        category.setShow(null);
     }
 
     public Long getId() {
@@ -90,14 +109,6 @@ public class Show {
         this.stylings = stylings;
     }
 
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
-    }
-
     public Banner getBanner() {
         return banner;
     }
@@ -112,6 +123,46 @@ public class Show {
             banner.setShow(this);
         }
         this.banner = banner;
+    }
+
+    public Integer getMaxParticipantsNumber() {
+        return maxParticipantsNumber;
+    }
+
+    public void setMaxParticipantsNumber(Integer maxParticipantsNumber) {
+        this.maxParticipantsNumber = maxParticipantsNumber;
+    }
+
+    public LocalDateTime getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(LocalDateTime joiningDate) {
+        this.joiningDate = joiningDate;
+    }
+
+    public LocalDateTime getVotingTime() {
+        return votingTime;
+    }
+
+    public void setVotingTime(LocalDateTime votingTime) {
+        this.votingTime = votingTime;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     @Override

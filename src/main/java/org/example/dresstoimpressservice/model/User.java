@@ -24,6 +24,20 @@ public class User {
     )
     private List<Styling> stylings = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Notification> notifications = new ArrayList<>();
+
     public void addStyling(Styling styling) {
         stylings.add(styling);
         styling.setUser(this);
@@ -32,6 +46,26 @@ public class User {
     public void removeStyling(Styling styling) {
         stylings.remove(styling);
         styling.setUser(null);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setUser(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setUser(null);
+    }
+
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+        notification.setUser(this);
+    }
+
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+        notification.setUser(null);
     }
 
 
@@ -89,5 +123,21 @@ public class User {
 
     public void setStylings(List<Styling> stylings) {
         this.stylings = stylings;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

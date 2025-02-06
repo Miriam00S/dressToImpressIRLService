@@ -1,13 +1,7 @@
 package org.example.dresstoimpressservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity(name = "category")
 public class Category {
@@ -17,9 +11,9 @@ public class Category {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
-    private Set<Show> shows = new HashSet<>();
-
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Show show;
 
     public Long getId() {
         return id;
@@ -37,26 +31,11 @@ public class Category {
         this.name = name;
     }
 
-    public Set<Show> getShows() {
-        return shows;
+    public Show getShow() {
+        return show;
     }
 
-    public void setShows(Set<Show> shows) {
-        this.shows = shows;
+    public void setShow(Show show) {
+        this.show = show;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return Objects.equals(name, category.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-
-
 }
