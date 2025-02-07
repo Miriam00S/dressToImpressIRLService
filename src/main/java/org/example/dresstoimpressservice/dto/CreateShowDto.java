@@ -13,6 +13,8 @@ public class CreateShowDto {
 
     private LocalDateTime votingTime;
 
+    private String banner;
+
     public String getTopic() {
         return topic;
     }
@@ -51,5 +53,13 @@ public class CreateShowDto {
 
     public void setVotingTime(LocalDateTime votingTime) {
         this.votingTime = votingTime;
+    }
+
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
     }
 }

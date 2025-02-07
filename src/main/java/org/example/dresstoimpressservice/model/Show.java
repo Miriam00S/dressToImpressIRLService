@@ -22,6 +22,8 @@ public class Show {
 
     private LocalDateTime votingTime;
 
+    private String banner;
+
     @OneToMany(
             mappedBy = "show",
             cascade = CascadeType.ALL,
@@ -36,9 +38,6 @@ public class Show {
     )
     private List<Category> categories = new ArrayList<>();
 
-    @OneToOne(mappedBy = "show", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
-    private Banner banner;
 
     @OneToMany(
             mappedBy = "show",
@@ -109,21 +108,6 @@ public class Show {
         this.stylings = stylings;
     }
 
-    public Banner getBanner() {
-        return banner;
-    }
-
-    public void setBanner(Banner banner) {
-        if (banner == null) {
-            if (this.banner != null) {
-                this.banner.setShow(null);
-            }
-        }
-        else {
-            banner.setShow(this);
-        }
-        this.banner = banner;
-    }
 
     public Integer getMaxParticipantsNumber() {
         return maxParticipantsNumber;
@@ -149,6 +133,14 @@ public class Show {
         this.votingTime = votingTime;
     }
 
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -165,15 +157,4 @@ public class Show {
         this.categories = categories;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Show)) return false;
-        return id != null && id.equals(((Show) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

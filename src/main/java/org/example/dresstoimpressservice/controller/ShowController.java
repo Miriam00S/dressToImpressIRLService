@@ -5,13 +5,11 @@ import org.example.dresstoimpressservice.dto.CreatingStylingDto;
 import org.example.dresstoimpressservice.model.Show;
 import org.example.dresstoimpressservice.model.Styling;
 import org.example.dresstoimpressservice.model.User;
-import org.example.dresstoimpressservice.repository.BannerRepository;
 import org.example.dresstoimpressservice.repository.ShowRepository;
 import org.example.dresstoimpressservice.repository.UserRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/shows")
@@ -20,12 +18,14 @@ public class ShowController {
     private final ShowRepository showRepository;
     private final UserRepository userRepository;
 
-
-
-
-    public ShowController(ShowRepository showRepository, UserRepository userRepository, BannerRepository bannerRepository) {
+    public ShowController(ShowRepository showRepository, UserRepository userRepository) {
         this.showRepository = showRepository;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping
+    List<Show> findAll() {
+        return showRepository.findAll();
     }
 
     @PostMapping
@@ -36,6 +36,7 @@ public class ShowController {
         show.setMaxParticipantsNumber(showDto.getMaxParticipantsNumber());
         show.setJoiningDate(showDto.getJoiningDate());
         show.setVotingTime(showDto.getVotingTime());
+        show.setBanner(showDto.getBanner());
         Show savedShow = showRepository.save(show);
         return savedShow;
     }

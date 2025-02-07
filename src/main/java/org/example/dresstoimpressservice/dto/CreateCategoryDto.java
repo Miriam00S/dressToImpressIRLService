@@ -1,17 +1,16 @@
 package org.example.dresstoimpressservice.dto;
 
-public class CreateBannerDto {
+public class CreateCategoryDto {
 
-    private String photo;
-
+    private String name;
     private Long showId;
 
-    public String getPhoto() {
-        return photo;
+    public String getName() {
+        return name;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getShowId() {
