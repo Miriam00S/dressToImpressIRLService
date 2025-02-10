@@ -1,5 +1,6 @@
 package org.example.dresstoimpressservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,14 @@ public class Show {
     )
     private List<Comment> comments = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(
+            mappedBy = "show",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Notification> notifications = new ArrayList<>();
+
     public void addStyling(Styling styling) {
         stylings.add(styling);
         styling.setShow(this);
@@ -74,6 +83,16 @@ public class Show {
     public void removeCategory(Category category) {
         categories.remove(category);
         category.setShow(null);
+    }
+
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+        notification.setShow(this);
+    }
+
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+        notification.setShow(null);
     }
 
     public Long getId() {
@@ -157,4 +176,11 @@ public class Show {
         this.categories = categories;
     }
 
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }

@@ -14,6 +14,8 @@ public class Comment {
 
     private String message;
 
+    private Boolean isEdited;
+
     private LocalDateTime time;
 
     @JsonIgnore
@@ -38,6 +40,14 @@ public class Comment {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Boolean getEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(Boolean edited) {
+        isEdited = edited;
     }
 
     public LocalDateTime getTime() {

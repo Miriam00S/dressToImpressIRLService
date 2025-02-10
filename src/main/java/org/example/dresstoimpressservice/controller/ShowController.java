@@ -7,6 +7,8 @@ import org.example.dresstoimpressservice.model.Styling;
 import org.example.dresstoimpressservice.model.User;
 import org.example.dresstoimpressservice.repository.ShowRepository;
 import org.example.dresstoimpressservice.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,5 +56,55 @@ public class ShowController {
         user.addStyling(styling);
         showRepository.save(show);
         return styling;
+    }
+
+    @GetMapping("/by-category")
+    public List<Show> getShowsByCategory(@RequestParam String name) {
+        return showRepository.findByCategoryName(name);
+    }
+
+    @GetMapping("/by-topic")
+    public List<Show> getShowsByTopic(@RequestParam String topic) {
+        return showRepository.findByTopicIgnoreCase(topic);
+    }
+
+    @GetMapping("/by-creator")
+    public List<Show> getShowsByCreator(@RequestParam Long creatorId) {
+        return showRepository.findByCreatorId(creatorId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteShow(@PathVariable Long id) {
+        if (showRepository.existsById(id)) {
+            showRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Show zostało pomyślnie usunięte.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show o podanym ID nie istnieje.");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Show> updateShow(@PathVariable Long id, @RequestBody CreateShowDto showDto) {
+        // Sprawdź, czy show istnieje w bazie danych
+        Show existingShow = showRepository.findById(id).orElse(null);
+
+        if (existingShow == null) {
+            // Jeśli show nie istnieje, zwróć błąd 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Zaktualizuj dane show na podstawie danych z requesta
+        existingShow.setTopic(showDto.getTopic());
+        existingShow.setCreatorId(showDto.getCreatorId());
+        existingShow.setMaxParticipantsNumber(showDto.getMaxParticipantsNumber());
+        existingShow.setJoiningDate(showDto.getJoiningDate());
+        existingShow.setVotingTime(showDto.getVotingTime());
+        existingShow.setBanner(showDto.getBanner());
+
+        // Zapisz zmienione show do bazy danych
+        Show updatedShow = showRepository.save(existingShow);
+
+        // Zwróć odpowiedź z aktualizowanym obiektem Show
+        return ResponseEntity.ok(updatedShow);
     }
 }

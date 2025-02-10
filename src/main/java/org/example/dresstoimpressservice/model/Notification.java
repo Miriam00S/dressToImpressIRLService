@@ -18,6 +18,10 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Show show;
+
     public Long getId() {
         return id;
     }
@@ -48,5 +52,13 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Show getShow() {
+        return show;
+    }
+
+    public void setShow(Show show) {
+        this.show = show;
     }
 }

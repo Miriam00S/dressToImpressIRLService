@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 public class CreateCommentDto {
     private String message;
     private LocalDateTime time;
+
+    private Boolean isEdited;
     private Long showId;
     private Long userId;
 
@@ -22,6 +24,14 @@ public class CreateCommentDto {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public Boolean getEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(Boolean edited) {
+        isEdited = edited;
     }
 
     public Long getShowId() {
