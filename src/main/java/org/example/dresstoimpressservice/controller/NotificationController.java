@@ -27,7 +27,6 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<Notification> createNotification(@RequestBody CreateNotificationDto createNotificationDto) {
-        // Znajdź użytkownika po ID
         User user = userRepository.findById(createNotificationDto.getUserId()).orElse(null);
 
         if (user == null) {
@@ -40,14 +39,13 @@ public class NotificationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        // Tworzymy nowy obiekt Notification
+        // create a new Notification object
         Notification notification = new Notification();
         notification.setRead(createNotificationDto.getRead());
         notification.setMessage(createNotificationDto.getMessage());
         notification.setUser(user);
         notification.setShow(show);
 
-        // Zapisujemy nowy obiekt Notification w bazie danych
         Notification savedNotification = notificationRepository.save(notification);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedNotification);
@@ -55,22 +53,18 @@ public class NotificationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Notification> updateNotification(@PathVariable Long id, @RequestBody CreateNotificationDto createNotificationDto) {
-        // Znajdujemy powiadomienie po ID
         Notification notification = notificationRepository.findById(id).orElse(null);
 
         if (notification == null) {
-            // Jeśli powiadomienie nie istnieje, zwracamy kod 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        // Zaktualizuj dane powiadomienia
+        // Update notification details
         notification.setRead(createNotificationDto.getRead());
         notification.setMessage(createNotificationDto.getMessage());
 
-        // Zapisz zaktualizowane powiadomienie
         Notification updatedNotification = notificationRepository.save(notification);
 
-        // Zwróć zaktualizowane powiadomienie
         return ResponseEntity.ok(updatedNotification);
     }
 }

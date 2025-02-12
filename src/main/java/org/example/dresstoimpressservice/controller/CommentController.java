@@ -30,7 +30,6 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<?> addComment(@RequestBody CreateCommentDto createCommentDto) {
-        // Znajdź show po ID
         Optional<Show> optionalShow = showRepository.findById(createCommentDto.getShowId());
 
         if (optionalShow.isEmpty()) {
@@ -39,7 +38,6 @@ public class CommentController {
 
         Show show = optionalShow.get();
 
-        // Znajdź user po ID
         Optional<User> optionalUser = userRepository.findById(createCommentDto.getUserId());
 
         if (optionalUser.isEmpty()) {
@@ -48,7 +46,7 @@ public class CommentController {
 
         User user = optionalUser.get();
 
-        // Tworzenie nowego komentarza
+        // Creating a new comment
         Comment comment = new Comment();
         comment.setMessage(createCommentDto.getMessage());
         comment.setTime(createCommentDto.getTime() != null ? createCommentDto.getTime() : LocalDateTime.now());
@@ -56,7 +54,6 @@ public class CommentController {
         comment.setUser(user);
         comment.setShow(show);
 
-        // Zapis do bazy danych
         commentRepository.save(comment);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
@@ -64,27 +61,25 @@ public class CommentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CreateCommentDto updateCommentDto) {
-        // Znalezienie komentarza po ID
         Optional<Comment> optionalComment = commentRepository.findById(id);
 
         if (optionalComment.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Komentarz o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment with the given ID does not exist.");
         }
 
         Comment comment = optionalComment.get();
 
-        // Aktualizacja treści komentarza
+        // Updating comment content
         if (updateCommentDto.getMessage() != null) {
             comment.setMessage(updateCommentDto.getMessage());
         }
 
-        // Aktualizacja daty edycji (jeśli nie podano, ustawiamy na teraz)
+        // Update edit date (if not specified, set to now)
         comment.setTime(updateCommentDto.getTime() != null ? updateCommentDto.getTime() : LocalDateTime.now());
 
-        // Ustawienie flagi `isEdited` na `true`
+        // Set the `isEdited` flag to `true`
         comment.setEdited(true);
 
-        // Zapis zmian do bazy danych
         commentRepository.save(comment);
 
         return ResponseEntity.ok(comment);
@@ -92,14 +87,13 @@ public class CommentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
-        // Znalezienie komentarza po ID
         Optional<Comment> optionalComment = commentRepository.findById(id);
 
         if (optionalComment.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Komentarz o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment with the given ID does not exist.");
         }
 
-        // Usunięcie komentarza
+        // Delete comment
         commentRepository.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

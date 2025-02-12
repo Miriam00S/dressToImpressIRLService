@@ -40,14 +40,12 @@ public class VoteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteVote(@PathVariable Long id) {
-        // Znalezienie głosu po ID
         Optional<Vote> optionalVote = voteRepository.findById(id);
 
         if (optionalVote.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vote o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vote with the given ID does not exist.");
         }
 
-        // Usunięcie głosu
         voteRepository.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

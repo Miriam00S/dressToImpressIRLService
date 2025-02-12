@@ -28,23 +28,23 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody CreateCategoryDto createCategoryDto) {
-        // Sprawdzenie, czy podane show istnieje
+        // Checking if the given show exists
         Optional<Show> optionalShow = showRepository.findById(createCategoryDto.getShowId());
 
         if (optionalShow.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show with the given ID does not exist.");
         }
 
         Show show = optionalShow.get();
 
-        // Tworzenie nowej kategorii
+        // Creating a new category
         Category category = new Category();
         category.setName(createCategoryDto.getName());
 
-        // Dodanie kategorii do show
+        // Adding a category to the show
         show.addCategory(category);
 
-        // Zapis do bazy
+        // Database entry
         categoryRepository.save(category);
         showRepository.save(show);
 

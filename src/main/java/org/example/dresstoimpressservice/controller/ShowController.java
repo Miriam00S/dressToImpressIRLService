@@ -43,7 +43,7 @@ public class ShowController {
         return savedShow;
     }
 
-    //dodaje stylizacje do show
+    //adds styling to the show
     @PostMapping("/stylings")
     Styling createStyling(@RequestBody CreatingStylingDto stylingDto) {
         Show show = showRepository.findById(stylingDto.getShowId()).orElseThrow();
@@ -77,23 +77,20 @@ public class ShowController {
     public ResponseEntity<?> deleteShow(@PathVariable Long id) {
         if (showRepository.existsById(id)) {
             showRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Show zostało pomyślnie usunięte.");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Show has been successfully removed.");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show with the given ID does not exist.");
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Show> updateShow(@PathVariable Long id, @RequestBody CreateShowDto showDto) {
-        // Sprawdź, czy show istnieje w bazie danych
         Show existingShow = showRepository.findById(id).orElse(null);
 
         if (existingShow == null) {
-            // Jeśli show nie istnieje, zwróć błąd 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        // Zaktualizuj dane show na podstawie danych z requesta
         existingShow.setTopic(showDto.getTopic());
         existingShow.setCreatorId(showDto.getCreatorId());
         existingShow.setMaxParticipantsNumber(showDto.getMaxParticipantsNumber());
@@ -101,10 +98,8 @@ public class ShowController {
         existingShow.setVotingTime(showDto.getVotingTime());
         existingShow.setBanner(showDto.getBanner());
 
-        // Zapisz zmienione show do bazy danych
         Show updatedShow = showRepository.save(existingShow);
 
-        // Zwróć odpowiedź z aktualizowanym obiektem Show
         return ResponseEntity.ok(updatedShow);
     }
 }

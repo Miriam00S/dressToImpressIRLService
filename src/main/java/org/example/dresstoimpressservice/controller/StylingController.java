@@ -29,38 +29,33 @@ public class StylingController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStyling(@PathVariable Long id, @RequestBody CreatingStylingDto stylingDto) {
-        // Znalezienie stylizacji po ID
         Optional<Styling> optionalStyling = stylingRepository.findById(id);
         if (optionalStyling.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stylizacja o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Styling with the given ID does not exist.");
         }
         Styling styling = optionalStyling.get();
 
-        // Aktualizacja pól stylizacji
         styling.setName(stylingDto.getName());
         styling.setDescription(stylingDto.getDescription());
         styling.setPhoto(stylingDto.getPhoto());
         styling.setPrivate(stylingDto.getPrivate());
 
-        // Znalezienie show, jeśli podano nowe showId
         if (stylingDto.getShowId() != null) {
             Optional<Show> optionalShow = showRepository.findById(stylingDto.getShowId());
             if (optionalShow.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show o podanym ID nie istnieje.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Show with the given ID does not exist.");
             }
             styling.setShow(optionalShow.get());
         }
 
-        // Znalezienie usera, jeśli podano nowe userId
         if (stylingDto.getUserId() != null) {
             Optional<User> optionalUser = userRepository.findById(stylingDto.getUserId());
             if (optionalUser.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Użytkownik o podanym ID nie istnieje.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with the given ID does not exist.");
             }
             styling.setUser(optionalUser.get());
         }
 
-        // Zapis do bazy danych
         Styling updatedStyling = stylingRepository.save(styling);
 
         return ResponseEntity.ok(updatedStyling);
@@ -68,14 +63,13 @@ public class StylingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStyling(@PathVariable Long id) {
-        // Znalezienie stylizacji po ID
+
         Optional<Styling> optionalStyling = stylingRepository.findById(id);
 
         if (optionalStyling.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stylizacja o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Styling with the given ID does not exist.");
         }
 
-        // Usunięcie stylizacji
         stylingRepository.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Status 204 No Content

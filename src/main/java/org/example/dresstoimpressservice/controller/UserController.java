@@ -20,12 +20,6 @@ public class UserController {
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-    @GetMapping("/hello")
-    String hello() {
-        return "hello";
-    }
-
     @GetMapping
     List<User> findAll() {
         return userRepository.findAll();
@@ -40,27 +34,23 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody CreateUserDto createUserDto) {
-        // Sprawdzamy, czy użytkownik o podanym ID istnieje
+
         Optional<User> existingUserOpt = userRepository.findById(id);
 
         if (existingUserOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        // Pobieramy istniejącego użytkownika
         User existingUser = existingUserOpt.get();
 
-        // Aktualizujemy dane użytkownika
         existingUser.setFirstName(createUserDto.getFirstName());
         existingUser.setLastName(createUserDto.getLastName());
         existingUser.setMail(createUserDto.getMail());
         existingUser.setNickname(createUserDto.getNickname());
         existingUser.setPhoto(createUserDto.getPhoto());
 
-        // Zapisujemy zaktualizowanego użytkownika w bazie
         User updatedUser = userRepository.save(existingUser);
 
-        // Zwracamy zaktualizowanego użytkownika
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -69,12 +59,12 @@ public class UserController {
         User user = userRepository.findByNickname(nickname);
 
         if (user == null) {
-            return ResponseEntity.status(404).body(null);  // Zwracamy 404 jeśli użytkownik nie istnieje
+            return ResponseEntity.status(404).body(null);
         }
 
         session.setAttribute("user", user);
 
-        return ResponseEntity.ok(user);  // Zwracamy użytkownika
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/me")
@@ -82,15 +72,15 @@ public class UserController {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return ResponseEntity.status(401).body(null);  // Użytkownik nie jest zalogowany
+            return ResponseEntity.status(401).body(null);
         }
 
-        return ResponseEntity.ok(user);  // Zwracamy aktualnie zalogowanego użytkownika
+        return ResponseEntity.ok(user); // return the currently logged-in user
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
-        // Usuwamy użytkownika z sesji
+        // remove user from the session
         session.invalidate();
         return ResponseEntity.ok("User logged out successfully");
     }

@@ -24,63 +24,59 @@ public class FileUploadController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Plik jest pusty");
+            return ResponseEntity.badRequest().body("File is empty");
         }
 
         try {
-            // Tworzymy katalog, jeśli nie istnieje
+            // create a directory if it doesn't exist
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            // Generujemy unikalną nazwę pliku na podstawie znacznika czasu
+            // generate a unique file name based on the timestamp
             String uniqueFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-            // Ścieżka do zapisu pliku z nową unikalną nazwą
             Path filePath = Paths.get(uploadDir, uniqueFileName);
 
-            // Zapisujemy plik
             Files.write(filePath, file.getBytes());
 
-            // Zwracamy nazwę pliku, a nie pełną ścieżkę
             return ResponseEntity.ok(String.valueOf(filePath));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Błąd zapisu pliku: " + e.getMessage());
+                    .body("File save error: " + e.getMessage());
         }
     }
 
     @GetMapping("/test")
     public ResponseEntity<String> testUploadDir() {
         System.out.println("testUploadDir method called");
-        return ResponseEntity.ok("Katalog uploadów: " + uploadDir);
+        return ResponseEntity.ok("Uploads catalog: " + uploadDir);
     }
 
     @GetMapping("/{fileName}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
         try {
-            // Tworzymy pełną ścieżkę do pliku
+            // create the full path to the file
             Path filePath = Paths.get(uploadDir).resolve(fileName).normalize();
 
-            // Sprawdzamy, czy plik istnieje
             if (!Files.exists(filePath)) {
                 return ResponseEntity.notFound().build();
             }
 
-            // Ładujemy plik jako zasób
+            // We load the file as a resource
             Resource resource = new UrlResource(filePath.toUri());
 
-            // Sprawdzamy, czy zasób jest dostępny
+            // check if the resource is available
             if (resource.exists() || resource.isReadable()) {
                 return ResponseEntity.ok()
                         .header("Content-Disposition", "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
-                return ResponseEntity.status(500).body(null); // Błąd odczytu pliku
+                return ResponseEntity.status(500).body(null);
             }
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null); // Ogólny błąd I/O
+            return ResponseEntity.status(500).body(null);
         }
     }
 }
