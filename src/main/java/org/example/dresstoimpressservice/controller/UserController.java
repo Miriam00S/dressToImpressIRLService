@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -69,19 +71,24 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return ResponseEntity.status(401).body(null);
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
-        return ResponseEntity.ok(user); // return the currently logged-in user
+        Optional<User> userOpt = userRepository.findById(sessionUser.getId());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(userOpt.get());
     }
+
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        // remove user from the session
+    public ResponseEntity<Map<String, String>> logout(HttpSession session) {
         session.invalidate();
-        return ResponseEntity.ok("User logged out successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User logged out successfully");
+        return ResponseEntity.ok(response);
     }
+
 }
